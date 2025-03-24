@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Task App</title>
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">App Tareas</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="row my-5">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/add" method="POST">
+                            <div class="form-group">
+                                <input type="text" name="title" placeholder="Añadir Tarea" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="description" placeholder="Descripción" class="form-control" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <% if (tasks.length === 0) { %>
+                    <div class="alert alert-info">No hay tareas aún.</div>
+                <% } else { %>
+                    <% tasks.forEach(task => { %>
+                        <% if (!task.completed) { %>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <form action="/toggle" method="POST" style="display: inline;">
+                                    <input type="hidden" name="title" value="<%= task.title %>">
+                                    <button type="submit" class="btn btn-sm btn-secondary">
+                                        Marcar como Completada
+                                    </button>
+                                </form>
+                                <strong><%= task.title %></strong> - <%= task.description %>
+                                <form action="/delete" method="POST" style="display: inline;">
+                                    <input type="hidden" name="title" value="<%= task.title %>">
+                                    <button type="submit" class="btn btn-danger btn-sm ml-3">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                        <% } %>
+                    <% }); %>
+
+                    <h3>Tareas Completadas</h3>
+                    <div id="completedTasks">
+                        <% const completedTasks = tasks.filter(task => task.completed); %>
+                        <% if (completedTasks.length === 0) { %>
+                            <div class="alert alert-info">No hay tareas completadas aún.</div>
+                        <% } else { %>
+                            <% completedTasks.forEach(task => { %>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <strong><%= task.title %></strong> - <%= task.description %>
+                                        <form action="/delete" method="POST" style="display: inline;">
+                                            <input type="hidden" name="title" value="<%= task.title %>">
+                                            <button type="submit" class="btn btn-danger btn-sm ml-3">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
